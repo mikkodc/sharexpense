@@ -1,9 +1,10 @@
 <template>
-  <div id="app">
-    <Navbar :key="$route.fullPath"></Navbar>
-    <img alt="Vue logo" src="./assets/logo.png">
-    <router-view/>
-  </div>
+  <v-app>
+    <v-content transition="slide-x-transition">
+      <Navbar :key="$route.fullPath"></Navbar>
+      <router-view></router-view>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
