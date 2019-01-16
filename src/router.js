@@ -1,4 +1,3 @@
-import firebase from 'firebase';
 import Vue from "vue";
 import Router from "vue-router";
 
@@ -6,35 +5,35 @@ import Home from "@/views/Home.vue";
 import Login from "@/views/Login.vue";
 import SignUp from "@/views/SignUp.vue";
 
+import firebase from 'firebase';
+
 Vue.use(Router);
 
-const router = new Router({
+let router = new Router({
   mode: 'history',
   routes: [
     {
-      path: "*",
-      redirect: '/login'
-    },
-    {
       path: "/",
-      redirect: '/login'
-    },
-    {
-      path: "/login",
-      name: "Login",
-      component: Login
-    },
-    {
-      path: "/sign-up",
-      name: "SignUp",
-      component: SignUp
-    },
-    {
-      path: "/home",
       name: "home",
       component: Home,
       meta: {
         requiresAuth: true
+      }
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: Login,
+      meta: {
+        requiresGuest: true
+      }
+    },
+    {
+      path: "/sign-up",
+      name: "SignUp",
+      component: SignUp,
+      meta: {
+        requiresGuest: true
       }
     },
   ]
@@ -42,11 +41,32 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  if(requiresAuth && !currentUser) next('login');
-  else if (!requiresAuth && currentUser) next('home');
-  else next();
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+    if(!currentUser) {
+      next({
+        path: '/login',
+        query: {
+          redirect: to.fullPath
+        }
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+    if(currentUser) {
+      next({
+        path: '/',
+        query: {
+          redirect: to.fullPath
+        }
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

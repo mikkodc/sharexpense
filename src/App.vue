@@ -1,9 +1,19 @@
 <template>
   <div id="app">
+    <Navbar :key="$route.fullPath"></Navbar>
     <img alt="Vue logo" src="./assets/logo.png">
     <router-view/>
   </div>
 </template>
+
+<script>
+  import Navbar from "@/components/common/Navbar.vue";
+  export default {
+    components: {
+      Navbar
+    }
+  }
+</script>
 
 <style lang="scss">
 #app {
