@@ -1,9 +1,11 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-import Home from "@/views/Home.vue";
+import Dashboard from "@/views/Dashboard.vue";
 import Login from "@/views/Login.vue";
 import SignUp from "@/views/SignUp.vue";
+
+import AddTransaction from "@/views/AddTransaction.vue";
 
 import firebase from 'firebase';
 
@@ -14,12 +16,13 @@ let router = new Router({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home,
+      name: "dashboard",
+      component: Dashboard,
       meta: {
         requiresAuth: true
       }
     },
+    // Authentication
     {
       path: "/login",
       name: "Login",
@@ -34,6 +37,15 @@ let router = new Router({
       component: SignUp,
       meta: {
         requiresGuest: true
+      }
+    },
+    // Tranctions
+    {
+      path: "/add-transaction",
+      name: "AddTransaction",
+      component: AddTransaction,
+      meta: {
+        requiresAuth: true
       }
     },
   ]

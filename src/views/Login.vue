@@ -1,11 +1,20 @@
 <template lang="html">
-  <div class="login">
-    <h3>Sign In</h3>
-    <input type="text" v-model="email" placeholder="Email">
-    <input type="password" v-model="password" placeholder="Password">
-    <button @click="login">Connection</button>
-    <p>You don't have an account? You can <router-link to="/sign-up">create one</router-link></p>
-  </div>
+  <v-container>
+    <v-card class="elevation-12">
+      <v-toolbar dark color="teal">
+        <v-toolbar-title>Login form</v-toolbar-title>
+      </v-toolbar>
+      <v-card-text>
+        <v-form @submit.prevent="login">
+          <v-text-field prepend-icon="person" name="email" v-model="email" label="Email" type="text"></v-text-field>
+          <v-text-field prepend-icon="lock" name="password" v-model="password" label="Password" type="password"></v-text-field>
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn block color="teal" dark @click="login">Login</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -36,25 +45,4 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.login {
-  margin-top: 40px;
-}
-input {
-  display: block;
-  margin: 10px auto;
-  width: 20%;
-  padding: 15px;
-}
-button {
-  margin-top: 20px;
-  width: 10%;
-  cursor: pointer;
-}
-p {
-  margin-top: 40px;
-  font-size: 13px;
-}
-p a {
-  text-align: underline;
-}
 </style>
