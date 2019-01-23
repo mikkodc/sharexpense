@@ -8,6 +8,39 @@
         label="Amount"
         required
       ></v-text-field>
+      <v-select v-model="selectedPeople" :items="people" label="People" multiple>
+
+        <v-divider
+          slot="append-item"
+          class="mb-2"
+        ></v-divider>
+        <v-list-tile
+          slot="append-item"
+          disabled
+        >
+          <v-list-tile-avatar color="grey lighten-3">
+            <v-icon>mdi-food-apple</v-icon>
+          </v-list-tile-avatar>
+
+          <v-list-tile-content v-if="likesAllFruit">
+            <v-list-tile-title>Holy smokes, someone call the fruit police!</v-list-tile-title>
+          </v-list-tile-content>
+
+          <v-list-tile-content v-else-if="likesSomeFruit">
+            <v-list-tile-title>Fruit Count</v-list-tile-title>
+            <v-list-tile-sub-title>{{ selectedFruits.length }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+
+          <v-list-tile-content v-else>
+            <v-list-tile-title>
+              How could you not like fruit?
+            </v-list-tile-title>
+            <v-list-tile-sub-title>
+              Go ahead, make a selection above!
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-select>
       <v-dialog
         ref="dialog"
         v-model="modal"
@@ -54,11 +87,12 @@ export default {
     db.collection('people').get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         const data = {
-          'id' => doc.id,
-          'first_name' => doc.data().first_name,
-          'last_name' => doc.data().last_name
-          'email' => doc.data().email
+          'id': doc.id,
+          'first_name': doc.data().first_name,
+          'last_name': doc.data().last_name,
+          'email': doc.data().email
         }
+        this.people.push(data)
       })
     })
   },
@@ -67,6 +101,7 @@ export default {
     category: '',
     description: '',
     people: [],
+    selectedPeople: [],
     date: new Date().toISOString().substr(0, 10),
     modal: false,
   })
