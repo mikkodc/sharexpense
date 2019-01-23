@@ -8,7 +8,7 @@ import router from "./router";
 import store from "./store";
 import firebase from 'firebase';
 
-import './assets/scss/main.scss'
+// import './assets/scss/main.scss'
 
 import "./components/firebaseInit";
 import "./registerServiceWorker";

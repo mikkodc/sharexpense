@@ -1,62 +1,45 @@
 <template>
   <v-layout justify-start align-space-betwee column>
-    <v-form v-model="valid">
-      <v-text-field
-        v-model="amount"
-        :rules="amount"
-        prepend-icon="payment"
-        label="Amount"
-        required
-      ></v-text-field>
-      <v-select v-model="selectedPeople" :items="people" label="People" multiple>
+    <v-form>
+      <v-text-field v-model="amount" prepend-icon="payment" label="Amount" required></v-text-field>
+      <v-select v-model="selectedPeople" :items="people" label="People" prepend-icon="people" multiple chips>
+        <!-- Selection -->
+        <template slot="selection" slot-scope="data">
+          <v-chip :selected="data.selectedPeople" :key="JSON.stringify(data.item)" close class="chip--select-multi" @input="data.parent.selectItem(data.item)">
+            {{ data.item.first_name }}
+          </v-chip>
+        </template>
 
-        <v-divider
-          slot="append-item"
-          class="mb-2"
-        ></v-divider>
-        <v-list-tile
-          slot="append-item"
-          disabled
-        >
-          <v-list-tile-avatar color="grey lighten-3">
-            <v-icon>mdi-food-apple</v-icon>
-          </v-list-tile-avatar>
+        <!-- Item -->
+        <template slot="item" slot-scope="data">
+          <template v-if="typeof data.item !== 'object'">
+            <v-list-tile-content v-text="data.item"></v-list-tile-content>
+          </template>
+          <template v-else>
+            <v-list-tile-avatar color="teal">
+              <img v-if="data.item.avatar" :src="data.item.avatar">
+              <v-icon dark v-else>person</v-icon>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title v-html="data.item.first_name + ' ' +  data.item.last_name"></v-list-tile-title>
+              <v-list-tile-sub-title v-html="data.item.email"></v-list-tile-sub-title>
+            </v-list-tile-content>
+          </template>
+        </template>
 
-          <v-list-tile-content v-if="likesAllFruit">
-            <v-list-tile-title>Holy smokes, someone call the fruit police!</v-list-tile-title>
-          </v-list-tile-content>
+        <v-divider slot="append-item" class="mb-2"></v-divider>
 
-          <v-list-tile-content v-else-if="likesSomeFruit">
-            <v-list-tile-title>Fruit Count</v-list-tile-title>
-            <v-list-tile-sub-title>{{ selectedFruits.length }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-
-          <v-list-tile-content v-else>
+        <v-list-tile slot="append-item">
+          <v-list-tile-content>
             <v-list-tile-title>
-              How could you not like fruit?
+              Add New...
             </v-list-tile-title>
-            <v-list-tile-sub-title>
-              Go ahead, make a selection above!
-            </v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-select>
-      <v-dialog
-        ref="dialog"
-        v-model="modal"
-        :return-value.sync="date"
-        persistent
-        lazy
-        full-width
-        width="290px"
-      >
-        <v-text-field
-          slot="activator"
-          v-model="date"
-          label="Picker in dialog"
-          prepend-icon="event"
-          readonly
-        ></v-text-field>
+
+      <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent lazy full-width width="290px">
+        <v-text-field slot="activator" v-model="date" label="Picker in dialog" prepend-icon="event" readonly></v-text-field>
         <v-date-picker v-model="date" scrollable>
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
@@ -68,12 +51,7 @@
         prepend-icon="adjust"
         required
       ></v-select>
-      <v-text-field
-        v-model="description"
-        :rules="description"
-        prepend-icon="subject"
-        label="Description"
-      ></v-text-field>
+      <v-text-field v-model="description" prepend-icon="subject" label="Description"></v-text-field>
     </v-form>
   </v-layout>
 </template>
