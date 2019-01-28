@@ -15,6 +15,7 @@ import "./registerServiceWorker";
 
 Vue.use(Vuetify)
 Vue.config.productionTip = false;
+Vue.config.devtools = true;
 
 let app;
 firebase.auth().onAuthStateChanged((user) => {
