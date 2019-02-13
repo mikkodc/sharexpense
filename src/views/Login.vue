@@ -25,13 +25,13 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
     }
   },
   methods: {
     login: function() {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-        (user) => {
+        () => {
           alert('Well done! You are now connected');
           this.$router.push('/');
         },

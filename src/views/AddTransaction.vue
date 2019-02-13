@@ -1,9 +1,9 @@
 <template>
   <v-layout justify-start align-space-betwee column>
     <v-form @submit.prevent="addTransaction">
-      <v-text-field v-model="amount" prepend-icon="payment" label="Amount" v-on:input="updateAmount" required></v-text-field>
+      <v-text-field v-model="amount" prepend-icon="payment" label="Amount" @input="updateAmount" required clearable></v-text-field>
       <v-autocomplete v-model="selectedPeople" :items="people" label="People" prepend-icon="people" item-text="first_name"
-      item-value="first_name" color="teal" multiple chips>
+      item-value="id" color="teal" multiple chips	@input="updateAmount">
         <!-- Selection -->
         <template slot="selection" slot-scope="data">
           <v-chip :selected="data.selectedPeople" :key="JSON.stringify(data.item)" close class="chip--select-multi" @input="data.parent.selectItem(data.item)">
@@ -44,15 +44,15 @@
           <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
         </v-date-picker>
       </v-dialog>
-      <v-select
+      <!-- <v-select
         label="Category"
         prepend-icon="adjust"
         color="teal"
         required
-      ></v-select>
+      ></v-select> -->
       <v-text-field v-model="description" prepend-icon="subject" label="Description"></v-text-field>
 
-      <p>{{splitAmount}}</p>
+      <p v-if="splitAmount != null"><b>Amount per Monkey:</b> {{ splitAmount }}</p>
       <v-btn dark color="teal" type="submit">Save</v-btn>
       <v-btn>Cancel</v-btn>
     </v-form>
@@ -67,7 +67,7 @@ export default {
   name: "add-transaction",
   data: () => ({
     amount: '',
-    splitAmount: '',
+    splitAmount: null,
     category: '',
     description: '',
     people: [],
@@ -84,19 +84,29 @@ export default {
   methods: {
     addTransaction() {
       db.collection('transactions').add({
+        transOwner: this.$store.state.currentUser.userId,
         totalAmount: this.amount,
         description: this.description,
         date:  firebase.firestore.Timestamp.fromDate(this.formDate)
       }).then(docRef => {
-        // this.$router.push('/');
-        console.log(docRef.id);
+        this.selectedPeople.forEach((doc) => {
+          db.collection('sharedTransactions').add({
+            paid: false,
+            splitOwner: doc,
+            transId: docRef.id
+          });
+        });
+        this.$router.push('/');
       }).catch(error => {
         console.log(error);
       });
     },
     updateAmount() {
-      this.splitAmount = this.amount / this.selectedPeople.length;
-      console.log(this.selectedPeople.length);
+      if(this.selectedPeople.length > 0) {
+        this.splitAmount = this.amount / (this.selectedPeople.length + parseInt(1));
+      } else {
+        this.splitAmount = null;
+      }
     },
   },
   created() {

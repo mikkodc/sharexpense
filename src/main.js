@@ -18,11 +18,23 @@ Vue.config.productionTip = false;
 Vue.config.devtools = true;
 
 let app;
-firebase.auth().onAuthStateChanged((user) => {
+firebase.auth().onAuthStateChanged(() => {
   if(!app) {
     app = new Vue({
       router,
       store,
+      created() {
+        const user = firebase.auth().currentUser;
+        if(user) {
+          this.$store.commit('updateCurUser', {
+            userId: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photoUrl: user.photoURL,
+            emailVerified: user.emailVerified
+          });
+        }
+      },
       render: h => h(App)
     }).$mount("#app");
   }

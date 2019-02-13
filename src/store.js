@@ -4,7 +4,17 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {}
+  state: {
+    currentUser: {}
+  },
+  mutations: {
+    updateCurUser(state, payload) {
+      state.currentUser = payload;
+    }
+  },
+  actions: {
+    setCurUser(context, payload) {
+      context.commit('updateCurUser', payload)
+    }
+  }
 });
