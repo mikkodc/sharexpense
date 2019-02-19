@@ -4,15 +4,19 @@ import Router from "vue-router";
 import Dashboard from "@/views/Dashboard.vue";
 import Login from "@/views/Login.vue";
 import SignUp from "@/views/SignUp.vue";
+import Profile from "@/views/Profile.vue";
+
+import Monkeys from "@/components/monkeys/IndexMonkey.vue";
+import AddMonkey from "@/components/monkeys/AddMonkey.vue";
 
 import AddTransaction from "@/views/AddTransaction.vue";
 
-import firebase from 'firebase';
+import firebase from "firebase";
 
 Vue.use(Router);
 
 let router = new Router({
-  mode: 'history',
+  mode: "history",
   routes: [
     {
       path: "/",
@@ -39,11 +43,39 @@ let router = new Router({
         requiresGuest: true
       }
     },
-    // Tranctions
+    // Profile
+    {
+      path: "/profile",
+      name: "Profile",
+      component: Profile,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    // Transactions
     {
       path: "/add-transaction",
       name: "AddTransaction",
       component: AddTransaction,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/monkeys/",
+      name: "Monkeys",
+      component: Monkeys,
+      meta: {
+        requiresAuth: true
+      },
+      children: [
+        { path: 'add', component: AddMonkey },
+      ]
+    },
+    {
+      path: "/add-monkey",
+      name: "AddMonkey",
+      component: AddMonkey,
       meta: {
         requiresAuth: true
       }
@@ -54,10 +86,10 @@ let router = new Router({
 router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
 
-  if(to.matched.some(record => record.meta.requiresAuth)) {
-    if(!currentUser) {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!currentUser) {
       next({
-        path: '/login',
+        path: "/login",
         query: {
           redirect: to.fullPath
         }
@@ -66,9 +98,9 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else if (to.matched.some(record => record.meta.requiresGuest)) {
-    if(currentUser) {
+    if (currentUser) {
       next({
-        path: '/',
+        path: "/",
         query: {
           redirect: to.fullPath
         }

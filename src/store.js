@@ -10,11 +10,14 @@ export default new Vuex.Store({
   mutations: {
     updateCurUser(state, payload) {
       state.currentUser = payload;
+    },
+    updateCurUserName(state, payload) {
+      state.currentUser.name = payload;
     }
   },
   actions: {
     setCurUser(context, payload) {
-      context.commit('updateCurUser', payload)
+      context.commit("updateCurUser", payload);
     }
   }
 });

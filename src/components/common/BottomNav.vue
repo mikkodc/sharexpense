@@ -1,7 +1,7 @@
 <template lang="html">
   <v-card flat>
     <v-bottom-nav :value="true" absolute color="transparent">
-      <v-btn color="teal" flat value="transactions">
+      <v-btn color="teal" flat value="transactions" to="/">
         <span>Transactions</span>
         <v-icon>payment</v-icon>
       </v-btn>
@@ -11,8 +11,8 @@
         <v-icon>add</v-icon>
       </v-btn>
 
-      <v-btn color="teal" flat value="people">
-        <span>People</span>
+      <v-btn color="teal" flat value="people" to="/monkeys">
+        <span>Monkeys</span>
         <v-icon>people</v-icon>
       </v-btn>
     </v-bottom-nav>
@@ -20,8 +20,7 @@
 </template>
 
 <script>
-export default {
-}
+export default {};
 </script>
 
 <style lang="css" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <v-layout justify-start align-space-betwee column>
+  <v-layout justify-start align-space-between column>
     <v-form @submit.prevent="addTransaction">
       <v-text-field v-model="amount" prepend-icon="payment" label="Amount" @input="updateAmount" required clearable></v-text-field>
       <v-autocomplete v-model="selectedPeople" :items="people" label="People" prepend-icon="people" item-text="first_name"
@@ -28,7 +28,7 @@
         </template>
 
         <template slot="no-data">
-          <v-list-tile>
+          <v-list-tile to="/add-monkey">
             <v-list-tile-content>
               <v-list-tile-title>Add New</v-list-tile-title>
             </v-list-tile-content>
@@ -52,28 +52,28 @@
       ></v-select> -->
       <v-text-field v-model="description" prepend-icon="subject" label="Description"></v-text-field>
 
-      <p v-if="splitAmount != null"><b>Amount per Monkey:</b> {{ splitAmount }}</p>
+      <p v-if="splitAmount != null"><b>Amount per Monkey:</b> {{ splitAmount.toFixed(2) }}</p>
       <v-btn dark color="teal" type="submit">Save</v-btn>
-      <v-btn>Cancel</v-btn>
+      <v-btn to="/">Cancel</v-btn>
     </v-form>
   </v-layout>
 </template>
 
 <script>
-import db from '../components/firebaseInit';
-import firebase from 'firebase';
+import db from "../components/firebaseInit";
+import firebase from "firebase";
 
 export default {
   name: "add-transaction",
   data: () => ({
-    amount: '',
+    amount: "",
     splitAmount: null,
-    category: '',
-    description: '',
+    category: "",
+    description: "",
     people: [],
     selectedPeople: [],
     date: new Date().toISOString().substr(0, 10),
-    modal: false,
+    modal: false
   }),
   computed: {
     formDate() {
@@ -83,44 +83,61 @@ export default {
   },
   methods: {
     addTransaction() {
-      db.collection('transactions').add({
-        transOwner: this.$store.state.currentUser.userId,
-        totalAmount: this.amount,
-        description: this.description,
-        date:  firebase.firestore.Timestamp.fromDate(this.formDate)
-      }).then(docRef => {
-        this.selectedPeople.forEach((doc) => {
-          db.collection('sharedTransactions').add({
-            paid: false,
-            splitOwner: doc,
-            transId: docRef.id
+      db.collection("transactions")
+        .add({
+          transOwner: this.$store.state.currentUser.userId,
+          totalAmount: this.amount.toFixed(2),
+          description: this.description,
+          date: firebase.firestore.Timestamp.fromDate(this.formDate)
+        })
+        .then(docRef => {
+          this.selectedPeople.forEach(doc => {
+            db.collection("sharedTransactions").add({
+              paid: false,
+              splitOwner: doc,
+              transId: docRef.id
+            });
           });
+          this.$router.push("/");
+        })
+        .catch(error => {
+          console.log(error);
         });
-        this.$router.push('/');
-      }).catch(error => {
-        console.log(error);
-      });
     },
     updateAmount() {
-      if(this.selectedPeople.length > 0) {
-        this.splitAmount = this.amount / (this.selectedPeople.length + parseInt(1));
+      if (this.selectedPeople.length > 0) {
+        this.splitAmount =
+          this.amount / (this.selectedPeople.length + parseInt(1));
       } else {
         this.splitAmount = null;
       }
-    },
+    }
   },
   created() {
-    db.collection('people').get().then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const data = {
-          'id': doc.id,
-          'first_name': doc.data().first_name,
-          'last_name': doc.data().last_name,
-          'email': doc.data().email
-        }
-        this.people.push(data)
-      })
-    })
-  },
+    db.collection("sharedMonkey")
+      .where("monkeyBelongsTo", "==", this.$store.state.currentUser.userId)
+      .onSnapshot(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          db.collection("people")
+            .where(
+              firebase.firestore.FieldPath.documentId(),
+              "==",
+              doc.data().monkeyId
+            )
+            .get()
+            .then(querySnapshot => {
+              querySnapshot.forEach(i => {
+                const data = {
+                  id: i.id,
+                  first_name: i.data().first_name,
+                  last_name: i.data().last_name,
+                  email: i.data().email
+                };
+                this.people.push(data);
+              });
+            });
+        });
+      });
+  }
 };
 </script>

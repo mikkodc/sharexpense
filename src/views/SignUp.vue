@@ -24,41 +24,42 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import firebase from "firebase";
 
 export default {
-  name: 'signUp',
+  name: "signUp",
   data() {
     return {
       valid: false,
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       emailRules: [
-          v => !!v || 'E-mail is required',
-          v => /.+@.+/.test(v) || 'E-mail must be valid'
+        v => !!v || "E-mail is required",
+        v => /.+@.+/.test(v) || "E-mail must be valid"
       ],
       passwordRules: [
-          v => !!v || 'Password is required',
-          v =>
-              v.length >= 6 ||
-              'Password must be greater than 6 characters'
+        v => !!v || "Password is required",
+        v => v.length >= 6 || "Password must be greater than 6 characters"
       ]
-    }
+    };
   },
   methods: {
     signUp: function() {
-      firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
-        (user)  => {
-          alert('Your account has been created!');
-          this.$router.push('/');
-        },
-        (err) => {
-          alert('Oops. ' + err.message)
-        }
-      )
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(
+          user => {
+            alert("Your account has been created!");
+            this.$router.push("/");
+          },
+          err => {
+            alert("Oops. " + err.message);
+          }
+        );
     }
   }
-}
+};
 </script>
 
 <style lang="css" scoped>

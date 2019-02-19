@@ -11,14 +11,24 @@
 </template>
 
 <script>
-  import Navbar from "@/components/common/Navbar.vue";
-  import BottomNav from "@/components/common/BottomNav.vue";
+import Navbar from "@/components/common/Navbar.vue";
+import BottomNav from "@/components/common/BottomNav.vue";
 
-  export default {
-    components: {
-      Navbar, BottomNav
+export default {
+  components: {
+    Navbar,
+    BottomNav
+  },
+  computed: {
+    currentUser() {
+      if(Object.entries(this.$store.state.currentUser).length === 0) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }
+};
 </script>
 
 <style lang="scss">

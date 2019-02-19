@@ -18,30 +18,33 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import firebase from "firebase";
 
 export default {
-  name: 'login',
+  name: "login",
   data() {
     return {
-      email: '',
-      password: '',
-    }
+      email: "",
+      password: ""
+    };
   },
   methods: {
     login: function() {
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-        () => {
-          alert('Well done! You are now connected');
-          this.$router.push('/');
-        },
-        (err) => {
-          alert('Oops. ' + err.message)
-        }
-      )
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(
+          () => {
+            alert("Well done! You are now connected");
+            this.$router.push("/");
+          },
+          err => {
+            alert("Oops. " + err.message);
+          }
+        );
     }
   }
-}
+};
 </script>
 
 <style lang="css" scoped>

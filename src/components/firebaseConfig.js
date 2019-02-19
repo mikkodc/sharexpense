@@ -5,4 +5,4 @@ export default {
   projectId: "share-expense-c8519",
   storageBucket: "",
   messagingSenderId: "261585604660"
-}
+};

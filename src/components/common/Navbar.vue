@@ -8,7 +8,7 @@
           </v-list-tile-avatar>
 
           <v-list-tile-content>
-            <v-list-tile-title>John Leider</v-list-tile-title>
+            <v-list-tile-title>{{ displayName }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -16,7 +16,7 @@
     <v-toolbar dark fixed app color="teal">
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <!-- <v-toolbar-title>Sharexpense</v-toolbar-title> -->
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>MonkeySplit</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn flat v-if="!isLoggedIn" to="/">Login</v-btn>
       <v-btn flat v-if="!isLoggedIn" to="/sign-up">Sign Up</v-btn>
@@ -26,6 +26,9 @@
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
+          <v-list-tile to="/profile">
+            <v-list-tile-title>Profile</v-list-tile-title>
+          </v-list-tile>
           <v-list-tile @click="logOut">
             <v-list-tile-title>Log Out</v-list-tile-title>
           </v-list-tile>
@@ -36,31 +39,39 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import firebase from "firebase";
 
 export default {
   data() {
     return {
       drawer: false,
       isLoggedIn: false,
-      currentUser: false,
+      currentUser: false
+    };
+  },
+  computed: {
+    displayName() {
+      return this.$store.state.currentUser.name;
     }
   },
   created() {
-    if(firebase.auth().currentUser) {
+    if (firebase.auth().currentUser) {
       this.isLoggedIn = true;
       this.currentUser = firebase.auth().currentUser.email;
     }
   },
   methods: {
     logOut: function() {
-      firebase.auth().signOut().then(() => {
-        this.$router.push('/login');
-        sheet = false;
-      })
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.push("/login");
+          sheet = false;
+        });
     }
   }
-}
+};
 </script>
 
 <style lang="css" scoped>
