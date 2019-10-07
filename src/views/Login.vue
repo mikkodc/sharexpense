@@ -5,7 +5,7 @@
         <v-toolbar-title>Login form</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        <v-form @submit.prevent="login">
+        <v-form @submit.prevent="login" @keyup.enter.native="login">
           <v-text-field prepend-icon="person" name="email" v-model="email" label="Email" type="text"></v-text-field>
           <v-text-field prepend-icon="lock" name="password" v-model="password" label="Password" type="password"></v-text-field>
         </v-form>
